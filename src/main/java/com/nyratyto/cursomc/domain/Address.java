@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 public class Address implements Serializable {
 
@@ -24,6 +26,7 @@ public class Address implements Serializable {
 	private String district; // equivalente = Bairro
 	private String zipPostalCode; // equivalente = CEP
 	
+	@JsonBackReference
 	@ManyToOne
 	@JoinColumn(name="customer_id")
 	private Customer customer;
