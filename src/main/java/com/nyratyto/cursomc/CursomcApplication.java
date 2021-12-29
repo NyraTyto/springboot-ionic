@@ -1,5 +1,6 @@
 package com.nyratyto.cursomc;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,13 +12,20 @@ import com.nyratyto.cursomc.domain.Address;
 import com.nyratyto.cursomc.domain.Category;
 import com.nyratyto.cursomc.domain.City;
 import com.nyratyto.cursomc.domain.Customer;
+import com.nyratyto.cursomc.domain.PurchaseOrder;
+import com.nyratyto.cursomc.domain.Payment;
+import com.nyratyto.cursomc.domain.PaymentByCard;
+import com.nyratyto.cursomc.domain.PaymentSlip;
 import com.nyratyto.cursomc.domain.Product;
 import com.nyratyto.cursomc.domain.State;
 import com.nyratyto.cursomc.domain.enums.CustomerType;
+import com.nyratyto.cursomc.domain.enums.PaymentStatus;
 import com.nyratyto.cursomc.repositories.AddressRepository;
 import com.nyratyto.cursomc.repositories.CategoryRepository;
 import com.nyratyto.cursomc.repositories.CityRepository;
 import com.nyratyto.cursomc.repositories.CustomerRepository;
+import com.nyratyto.cursomc.repositories.PurchaseOrderRepository;
+import com.nyratyto.cursomc.repositories.PaymentRepository;
 import com.nyratyto.cursomc.repositories.ProductRepository;
 import com.nyratyto.cursomc.repositories.StateRepository;
 
@@ -36,6 +44,10 @@ public class CursomcApplication implements CommandLineRunner {
 	private CustomerRepository customerRepository;
 	@Autowired
 	private AddressRepository addressRepository;
+	@Autowired
+	private PurchaseOrderRepository purchseOrderRepository;
+	@Autowired
+	private PaymentRepository paymentRepository;
 	
 	public static void main(String[] args) {
 		SpringApplication.run(CursomcApplication.class, args);
@@ -88,6 +100,23 @@ public class CursomcApplication implements CommandLineRunner {
 		
 		customerRepository.saveAll(Arrays.asList(cust1));
 		addressRepository.saveAll(Arrays.asList(ad1, ad2));
+		
+		//
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+		
+		PurchaseOrder ord1 = new PurchaseOrder(null, sdf.parse("24/12/2021 11:15"), cust1, ad1);
+		PurchaseOrder ord2 = new PurchaseOrder(null, sdf.parse("27/12/2021 16:32"), cust1, ad2);
+		
+		Payment paym1 = new PaymentByCard(null, PaymentStatus.PAID, ord1, 6);
+		ord1.setPayment(paym1);
+		Payment paym2 = new PaymentSlip(null, PaymentStatus.PENDING, ord2, sdf.parse("31/12/2021 23:59"), null);
+		ord2.setPayment(paym2);
+		
+		cust1.getOrders().addAll(Arrays.asList(ord1, ord2));
+		
+		purchseOrderRepository.saveAll(Arrays.asList(ord1, ord2));
+		paymentRepository.saveAll(Arrays.asList(paym1, paym2));
 	}
 
 }

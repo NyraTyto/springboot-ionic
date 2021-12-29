@@ -29,15 +29,18 @@ public class Customer implements Serializable {
 	private String name;
 	private String email;
 	private String idOrEin; // ID (equivalente = RG) or EIN (equivalente = CNPJ)
-	
 	private Integer type;
 	
 	@JsonManagedReference
 	@OneToMany(mappedBy = "customer")
 	private List<Address> addresses = new ArrayList<>();
+	
 	@ElementCollection
 	@CollectionTable(name="PHONE")
 	private Set<String> phones = new HashSet<>();
+	
+	@OneToMany(mappedBy = "customer")
+	private List<PurchaseOrder> purchaseOrders = new ArrayList<>();
 	
 	public Customer() {}
 
@@ -96,6 +99,10 @@ public class Customer implements Serializable {
 
 	public Set<String> getPhones() {
 		return phones;
+	}
+
+	public List<PurchaseOrder> getOrders() {
+		return purchaseOrders;
 	}
 
 	@Override
