@@ -12,6 +12,7 @@ import com.nyratyto.cursomc.domain.Address;
 import com.nyratyto.cursomc.domain.Category;
 import com.nyratyto.cursomc.domain.City;
 import com.nyratyto.cursomc.domain.Customer;
+import com.nyratyto.cursomc.domain.OrderItem;
 import com.nyratyto.cursomc.domain.PurchaseOrder;
 import com.nyratyto.cursomc.domain.Payment;
 import com.nyratyto.cursomc.domain.PaymentByCard;
@@ -24,6 +25,7 @@ import com.nyratyto.cursomc.repositories.AddressRepository;
 import com.nyratyto.cursomc.repositories.CategoryRepository;
 import com.nyratyto.cursomc.repositories.CityRepository;
 import com.nyratyto.cursomc.repositories.CustomerRepository;
+import com.nyratyto.cursomc.repositories.OrderItemRepository;
 import com.nyratyto.cursomc.repositories.PurchaseOrderRepository;
 import com.nyratyto.cursomc.repositories.PaymentRepository;
 import com.nyratyto.cursomc.repositories.ProductRepository;
@@ -48,6 +50,8 @@ public class CursomcApplication implements CommandLineRunner {
 	private PurchaseOrderRepository purchseOrderRepository;
 	@Autowired
 	private PaymentRepository paymentRepository;
+	@Autowired
+	private OrderItemRepository orderItemRepository;
 	
 	public static void main(String[] args) {
 		SpringApplication.run(CursomcApplication.class, args);
@@ -117,6 +121,21 @@ public class CursomcApplication implements CommandLineRunner {
 		
 		purchseOrderRepository.saveAll(Arrays.asList(ord1, ord2));
 		paymentRepository.saveAll(Arrays.asList(paym1, paym2));
+		
+		//
+		
+		OrderItem oi1 = new OrderItem(ord1, prod1, 0.00, 1, 2000.00);
+		OrderItem oi2 = new OrderItem(ord1, prod3, 0.00, 2, 80.00);
+		OrderItem oi3 = new OrderItem(ord2, prod2, 100.00, 1, 800.00);
+		
+		ord1.getItems().addAll(Arrays.asList(oi1, oi2));
+		ord2.getItems().addAll(Arrays.asList(oi3));
+		
+		prod1.getItems().addAll(Arrays.asList(oi1));
+		prod2.getItems().addAll(Arrays.asList(oi3));
+		prod3.getItems().addAll(Arrays.asList(oi2));
+		
+		orderItemRepository.saveAll(Arrays.asList(oi1, oi2, oi3));
 	}
 
 }
